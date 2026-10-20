@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rich Text to Markdown</title>
+<style>
+:root{--bg:#fafaf8;--fg:#1d1d1b;--mut:#6b6b66;--card:#fff;--bd:#d9d8d2;--ac:#2563eb;--acfg:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--fg:#ecebe6;--mut:#9a9992;--card:#202020;--bd:#3a3a37;--ac:#6b9bff;--acfg:#101010}}
+:root[data-theme="dark"]{--bg:#161615;--fg:#ecebe6;--mut:#9a9992;--card:#202020;--bd:#3a3a37;--ac:#6b9bff;--acfg:#101010}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1200px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0 0 4px}
+p.sub{color:var(--mut);margin:0 0 14px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+select,button,label.file{font:inherit;padding:7px 11px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);cursor:pointer}
+button.p{background:var(--ac);color:var(--acfg);border-color:var(--ac)}
+input[type=file]{display:none}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+.pane{display:flex;flex-direction:column}
+.pane h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:0 0 6px}
+#ed,#out{min-height:420px;max-height:70vh;overflow:auto;border:1px solid var(--bd);border-radius:10px;background:var(--card);padding:12px;color:var(--fg)}
+#ed:empty:before{content:attr(data-ph);color:var(--mut)}
+#ed img{max-width:100%}
+#ed table{border-collapse:collapse}#ed td,#ed th{border:1px solid var(--bd);padding:3px 6px}
+#out{width:100%;resize:vertical;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace}
+.st{color:var(--mut);font-size:13px;margin-top:6px}
+</style>
+</head>
+<body>
+<main>
+<h1>Rich Text to Markdown</h1>
+<p class="sub">Paste from Google Docs, Word or any web page. Tables, nested lists, images and more are converted as you paste.</p>
+<div class="bar">
+<select id="img" title="Images"><option value="keep">Images: keep links</option><option value="embed">Images: embed (base64)</option><option value="remove">Images: remove</option></select>
+<select id="hd"><option value="atx"># Headings</option><option value="setext">Underlined headings</option></select>
+<select id="bl"><option value="-">Bullets: -</option><option value="*">Bullets: *</option><option value="+">Bullets: +</option></select>
+<label class="file">Open .docx / .html<input id="f" type="file" accept=".docx,.html,.htm"></label>
+<button class="p" id="cp">Copy</button><button id="dl">Download .md</button><button id="clr">Clear</button>
+</div>
+<div class="grid">
+<div class="pane"><h2>Paste here</h2><div id="ed" contenteditable="true" data-ph="Paste formatted text or images here (Ctrl+V)..."></div></div>
+<div class="pane"><h2>Markdown</h2><textarea id="out" spellcheck="false"></textarea><div class="st" id="st"></div></div>
+</div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/turndown-plugin-gfm@1.0.2/dist/turndown-plugin-gfm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const ed=$('ed'),out=$('out'),st=$('st');
+const td=new TurndownService({headingStyle:'atx',bulletListMarker:'-',codeBlockStyle:'fenced',emDelimiter:'*'});
+td.use(turndownPluginGfm.gfm);
+const BOLD=/font-weight:\s*(700|800|900|bold)/,ITAL=/font-style:\s*italic/;
+// Google Docs / Word put bold and italic on styled spans
+td.addRule('styledSpan',{
+  filter:n=>n.nodeName==='SPAN'&&(BOLD.test(n.getAttribute('style')||'')||ITAL.test(n.getAttribute('style')||'')),
+  replacement:(c,n)=>{const s=n.getAttribute('style');if(!c.trim())return c;let o=c.trim();
+    if(ITAL.test(s))o='*'+o+'*';if(BOLD.test(s))o='**'+o+'**';return ' '+o+' ';}
+});
+function unwrap(el){el.replaceWith(...el.childNodes)}
+function clean(doc){
+  doc.querySelectorAll('b[id^="docs-internal-guid"],meta,style,script').forEach(e=>e.tagName==='B'?unwrap(e):e.remove());
+  doc.querySelectorAll('table').forEach(t=>{
+    t.querySelectorAll('td,th').forEach(c=>{c.querySelectorAll('p,div').forEach(p=>{p.after(' ');unwrap(p)});
+      c.innerHTML=c.innerHTML.replace(/\|/g,'&#124;').replace(/\s+/g,' ').trim()});
+    if(!t.querySelector('th')){const r=t.querySelector('tr');
+      if(r)r.querySelectorAll('td').forEach(c=>{const h=doc.createElement('th');h.innerHTML=c.innerHTML;c.replaceWith(h)})}
+  });
+  doc.querySelectorAll('li > p').forEach(unwrap);
+}
+async function toData(src){const r=await fetch(src);const b=await r.blob();
+  return new Promise(res=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(b)})}
+let tick=0;
+async function run(){
+  const my=++tick;
+  td.options.headingStyle=$('hd').value;td.options.bulletListMarker=$('bl').value;
+  const doc=new DOMParser().parseFromString(ed.innerHTML,'text/html');
+  clean(doc);
+  const mode=$('img').value;
+  for(const im of [...doc.querySelectorAll('img')]){
+    const s=im.getAttribute('src')||'';
+    if(mode==='remove'){im.remove();continue}
+    if(mode==='embed'&&/^https?:/.test(s)){try{im.setAttribute('src',await toData(s))}catch(e){/* blocked by CORS: keep link */}}
+  }
+  if(my!==tick)return;
+  const md=td.turndown(doc.body).replace(/\n{3,}/g,'\n\n');
+  out.value=md;
+  const words=(md.match(/\S+/g)||[]).length;
+  st.textContent=md?words+' words, '+md.length+' characters':'';
+}
+let t;const later=()=>{clearTimeout(t);t=setTimeout(run,150)};
+ed.addEventListener('input',later);
+['img','hd','bl'].forEach(i=>$(i).addEventListener('change',run));
+// pasted image files (screenshots) become data URIs
+ed.addEventListener('paste',e=>{
+  const cd=e.clipboardData;if(!cd)return;
+  const files=[...cd.files].filter(f=>f.type.startsWith('image/'));
+  if(files.length&&!cd.getData('text/html')){
+    e.preventDefault();
+    files.forEach(f=>{const fr=new FileReader();fr.onload=()=>{document.execCommand('insertHTML',false,'<img src="'+fr.result+'" alt="image">');later()};fr.readAsDataURL(f)});
+  }
+});
+$('f').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  try{
+    if(/\.docx$/i.test(f.name)){
+      const r=await mammoth.convertToHtml({arrayBuffer:await f.arrayBuffer()});ed.innerHTML=r.value;
+    }else{ed.innerHTML=await f.text()}
+    run();
+  }catch(err){st.textContent='Could not read that file.'}
+  e.target.value='';
+});
+$('cp').onclick=async()=>{try{await navigator.clipboard.writeText(out.value)}catch(e){out.select();document.execCommand('copy')}
+  $('cp').textContent='Copied';setTimeout(()=>$('cp').textContent='Copy',1200)};
+$('dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out.value],{type:'text/markdown'}));a.download='converted.md';a.click()};
+$('clr').onclick=()=>{ed.innerHTML='';out.value='';st.textContent=''};
+</script>
+</body>
+</html>
