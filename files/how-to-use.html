@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to use – Rich Text to Markdown Editor</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--fg:#1f2328;--mut:#6a737d;--bd:#e5e7eb;--ac:#4f46e5;--acs:#eef2ff}
+*{box-sizing:border-box}
+body{margin:0;background:#f8fafc;color:var(--fg);font:16px/1.65 "Google Sans Flex","Google Sans",system-ui,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--bd);padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:18px;margin:0;flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--bd);background:#fff;color:var(--fg);padding:8px 16px;border-radius:999px;text-decoration:none;font-size:14px}
+.btn.p{background:var(--ac);border-color:var(--ac);color:#fff}.btn svg{width:17px;height:17px}
+main{max-width:860px;margin:0 auto;padding:24px 16px 48px}
+.hero{text-align:center;padding:12px 0 20px}.hero h2{font-size:30px;margin:0 0 6px}.hero p{color:var(--mut);margin:0 0 16px}
+section{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:20px 24px;margin:16px 0}
+section h3{margin:0 0 8px;display:flex;gap:10px;align-items:center;font-size:20px}section h3 svg{color:var(--ac)}
+ol,ul{padding-left:22px;margin:6px 0}li{margin:5px 0}
+.k{display:inline-flex;vertical-align:middle;align-items:center;justify-content:center;width:30px;height:30px;border:1px solid var(--bd);border-radius:50%;background:var(--acs);margin:0 2px}.k svg{width:16px;height:16px}
+.note{background:var(--acs);border-radius:14px;padding:10px 14px;margin:10px 0;font-size:15px}
+details{border:1px solid var(--bd);border-radius:14px;padding:10px 14px;margin:8px 0}summary{cursor:pointer;font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:15px}td,th{border-bottom:1px solid var(--bd);padding:8px;text-align:left}
+</style>
+</head>
+<body>
+<header><h1>How to use the editor</h1><a class="btn p" href="index.html"><i data-lucide="pen-line"></i>Open the editor</a></header>
+<main>
+<div class="hero"><h2>From formatted text to Markdown in seconds</h2><p>No sign-up. Everything happens in your browser and nothing is uploaded to a server.</p></div>
+
+<section><h3><i data-lucide="rocket"></i>Quick start</h3>
+<ol>
+<li><b>Write or paste.</b> Click the white page and type, or paste from Google Docs, Word or a website.</li>
+<li><b>Format it.</b> Use the toolbar at the top, or select some text and a small toolbar pops up beside it.</li>
+<li><b>Take it with you.</b> Press <b>Download</b> and choose PDF, Word, Markdown, web page or plain text. Press <b>Copy Markdown</b> to copy only the Markdown.</li>
+</ol>
+<div class="note">Want to see the Markdown? Press <b>Show Markdown</b>. It appears next to your page and updates while you type.</div></section>
+
+<section><h3><i data-lucide="mouse-pointer-click"></i>Formatting text</h3>
+<p>Select the words first, then press a button:</p>
+<table>
+<tr><td><span class="k"><i data-lucide="heading-1"></i></span><span class="k"><i data-lucide="heading-2"></i></span><span class="k"><i data-lucide="heading-3"></i></span></td><td>Make a heading (big, medium, smaller). Press again to go back to normal text.</td></tr>
+<tr><td><span class="k"><i data-lucide="bold"></i></span><span class="k"><i data-lucide="italic"></i></span><span class="k"><i data-lucide="underline"></i></span><span class="k"><i data-lucide="strikethrough"></i></span></td><td>Bold, italic, underline, strikethrough.</td></tr>
+<tr><td><span class="k"><i data-lucide="highlighter"></i></span></td><td>Highlight text in yellow. Press again to remove it.</td></tr>
+<tr><td><span class="k"><i data-lucide="a-arrow-down"></i></span><span class="k"><i data-lucide="a-arrow-up"></i></span></td><td>Make the selected text smaller or bigger.</td></tr>
+<tr><td><span class="k"><i data-lucide="baseline"></i></span><span class="k"><i data-lucide="paint-bucket"></i></span></td><td>Pick any text color or background color you like from the color picker.</td></tr>
+<tr><td><span class="k"><i data-lucide="list"></i></span><span class="k"><i data-lucide="list-ordered"></i></span><span class="k"><i data-lucide="quote"></i></span></td><td>Bullet list, numbered list, quote. Press <b>Tab</b> inside a list to indent an item, <b>Shift+Tab</b> to move it back.</td></tr>
+<tr><td><span class="k"><i data-lucide="align-left"></i></span><span class="k"><i data-lucide="align-center"></i></span><span class="k"><i data-lucide="align-right"></i></span><span class="k"><i data-lucide="align-justify"></i></span></td><td>Align the paragraph left, center, right, or justified.</td></tr>
+<tr><td><span class="k"><i data-lucide="link"></i></span></td><td>Turn the selected text into a link. Leave the box empty to remove a link.</td></tr>
+<tr><td><span class="k"><i data-lucide="eraser"></i></span></td><td>Remove formatting from the selection.</td></tr>
+</table></section>
+
+<section><h3><i data-lucide="table"></i>Tables</h3>
+<ol><li>Press <span class="k"><i data-lucide="table"></i></span> and choose how many rows and columns you need.</li>
+<li>Click inside the table. A bar appears under it with <b>+ Row</b>, <b>+ Column</b>, <b>− Row</b>, <b>− Column</b> and <b>Table</b> (delete).</li>
+<li>The new row or column is added next to the cell where your cursor is.</li></ol></section>
+
+<section><h3><i data-lucide="image"></i>Pictures</h3>
+<ol><li>Press <span class="k"><i data-lucide="image"></i></span>, then paste a picture link, or choose <b>Upload from device</b>. You can also paste a screenshot straight into the page.</li>
+<li>Click a picture to select it. A bar appears above it where you can <b>round the corners</b> with the slider, set the size (25% to 100%), align it left, center or right, or delete it.</li></ol></section>
+
+<section><h3><i data-lucide="type"></i>Fonts</h3>
+<ul><li>Pick a font from the dropdown. With text selected it changes only that text. With nothing selected it changes the whole page.</li>
+<li><b>Your own font:</b> press <b>Add my own font</b> and choose a .ttf, .otf, .woff or .woff2 file. You can also type the name of a font installed on your computer into the font box and press Enter.</li></ul></section>
+
+<section><h3><i data-lucide="square-code"></i>Code</h3>
+<ul><li><span class="k"><i data-lucide="code"></i></span> turns selected text into <code>inline code</code>.</li>
+<li><span class="k"><i data-lucide="square-code"></i></span> makes a code block with a <b>Copy</b> button in its corner. Click the button to copy the code.</li></ul></section>
+
+<section><h3><i data-lucide="download"></i>Downloading</h3>
+<table>
+<tr><td><b>PDF</b></td><td>Looks exactly like your page, including colors, fonts and pictures.</td></tr>
+<tr><td><b>Word (.doc)</b></td><td>Opens in Microsoft Word and Google Docs. Keeps colors, fonts and tables.</td></tr>
+<tr><td><b>Markdown (.md)</b></td><td>For GitHub, notes apps and blogs. Keeps headings, lists, tables, links, code and pictures.</td></tr>
+<tr><td><b>Web page (.html)</b></td><td>A ready-to-open web page.</td></tr>
+<tr><td><b>Plain text (.txt)</b></td><td>Just the words.</td></tr></table>
+<div class="note"><b>Good to know:</b> Markdown cannot store colors, font sizes, fonts, alignment or rounded pictures, so those appear in PDF, Word and HTML but not in the .md file. Underline and highlight are saved as small HTML tags, which most Markdown viewers display correctly.</div></section>
+
+<section><h3><i data-lucide="circle-help"></i>Questions</h3>
+<details><summary>Is my text sent anywhere?</summary>No. Everything runs in your browser. The page only downloads its helper libraries from the internet.</details>
+<details><summary>Can I open a Word file?</summary>Yes. Press <b>Open .docx / .html</b>. Headings, lists, tables and pictures are brought in.</details>
+<details><summary>The selection toolbar did not appear.</summary>Select text with the mouse or by holding Shift and using the arrow keys. It only appears inside the white page.</details>
+<details><summary>My PDF has a long blank space or cut-off picture.</summary>Very tall pictures can split across pages. Make them smaller with the 25% or 50% buttons and download again.</details></section>
+<p style="text-align:center"><a class="btn p" href="index.html"><i data-lucide="pen-line"></i>Open the editor</a></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons()</script>
+</body>
+</html>
