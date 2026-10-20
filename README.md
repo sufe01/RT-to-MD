@@ -33,13 +33,7 @@ python3 -m http.server 8000
 ```
 
 Then visit `http://localhost:8000`. This command starts Python's built-in web server in the current folder and serves only the files in it.
-
-## Publish on GitHub Pages
-
-1. Create a new repository on GitHub and upload `index.html`, `how-to-use.html` and `README.md` to its root.
-2. Open **Settings > Pages**.
-3. Under **Build and deployment**, choose **Deploy from a branch**, select the `main` branch and the `/ (root)` folder, then **Save**.
-4. After a minute your site is live at `https://<your-username>.github.io/<repository-name>/`.
+You also can use it here by clickon on the url on the right side panel.
 
 ## Libraries used
 
@@ -54,4 +48,4 @@ Then visit `http://localhost:8000`. This command starts Python's built-in web se
 
 ## License
 
-Add the license of your choice (for example MIT) before publishing.
+This tool is under the protection of MIT license.
