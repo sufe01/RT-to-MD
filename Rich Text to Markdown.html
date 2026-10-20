@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rich Text to Markdown</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#fff;--fg:#1f2328;--mut:#6a737d;--bd:#e1e4e8;--ac:#2563eb;--soft:#f6f8fa;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 "Google Sans Flex","Google Sans",system-ui,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0 0 2px}.sub{color:var(--mut);margin:0 0 12px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+select,button,label.file{font:inherit;font-size:14px;padding:6px 11px;border:1px solid var(--bd);border-radius:8px;background:#fff;color:var(--fg);cursor:pointer}
+button:hover,label.file:hover{background:var(--soft)}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac)}button.p:hover{background:#1d4ed8}
+input[type=file]{display:none}
+.wrap{display:grid;grid-template-columns:1fr;gap:12px}
+.wrap.show{grid-template-columns:1fr 1fr}
+@media(max-width:800px){.wrap.show{grid-template-columns:1fr}}
+#mdp{display:none}.wrap.show #mdp{display:block}
+#ed{min-height:480px;max-height:75vh;overflow:auto;border:1px solid var(--bd);border-radius:10px;padding:16px 20px;font-family:"Google Sans Flex","Google Sans",system-ui,sans-serif;font-size:16px;line-height:1.65;outline:none}
+#ed:focus{border-color:var(--ac)}
+#ed:empty:before{content:attr(data-ph);color:var(--mut)}
+#ed h1{font-size:2em;margin:.6em 0 .3em}#ed h2{font-size:1.5em;margin:.6em 0 .3em}#ed h3{font-size:1.2em;margin:.6em 0 .3em}
+#ed img{max-width:100%}#ed a{color:var(--ac)}#ed mark{background:#fff3a3;padding:0 2px}
+#ed blockquote{margin:.6em 0;padding:2px 14px;border-left:4px solid var(--bd);color:var(--mut)}
+#ed table{border-collapse:collapse;margin:.6em 0}#ed td,#ed th{border:1px solid var(--bd);padding:5px 10px;min-width:60px}#ed th{background:var(--soft)}
+#ed code{font:.9em Consolas,ui-monospace,Menlo,monospace;background:var(--soft);padding:1px 5px;border-radius:4px}
+.cb{position:relative;margin:.7em 0}
+.cb pre{margin:0;background:#f6f8fa;border:1px solid var(--bd);border-radius:8px;padding:12px 14px;padding-right:70px;overflow:auto;white-space:pre}
+.cb pre code{background:none;padding:0;font-size:13.5px}
+.copybtn{position:absolute;top:8px;right:8px;font-size:12px;padding:3px 9px;user-select:none}
+#mdp h2{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:0 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#mdp h2 select{font-size:12px;padding:2px 6px;text-transform:none;letter-spacing:0}
+#out{width:100%;min-height:480px;height:75vh;border:1px solid var(--bd);border-radius:10px;padding:12px;font:13px/1.5 Consolas,ui-monospace,Menlo,monospace;color:var(--fg);resize:vertical}
+.st{color:var(--mut);font-size:13px;margin-top:6px}
+.bub{position:fixed;z-index:50;display:none;background:#fff;border:1px solid var(--bd);border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.16);padding:4px;max-width:94vw}
+.bub .row{display:flex;flex-wrap:wrap;gap:2px;align-items:center}
+.bub button{border:0;background:none;min-width:30px;height:30px;padding:0 7px;border-radius:6px;font-size:13px}
+.bub button:hover{background:#eef2ff}.bub .sep{width:1px;height:20px;background:var(--bd);margin:0 3px}
+.bub .lk{display:none;gap:4px;padding:2px}.bub .lk input{font:inherit;font-size:14px;border:1px solid var(--bd);border-radius:6px;padding:4px 8px;width:220px}
+.bub .lk button{border:1px solid var(--bd)}
+</style>
+</head>
+<body>
+<main>
+<h1>Rich Text to Markdown</h1>
+<p class="sub">Write or paste here, select text to format it, then copy the Markdown.</p>
+<div class="bar">
+<select id="font" title="Font">
+<option value="'Google Sans Flex','Google Sans',system-ui,sans-serif">Google Sans Flex</option>
+<option value="Poppins,sans-serif">Poppins</option><option value="Montserrat,sans-serif">Montserrat</option>
+<option value="Inter,sans-serif">Inter</option><option value="Arial,Helvetica,sans-serif">Arial</option>
+<option value="Georgia,serif">Georgia</option><option value="Consolas,ui-monospace,monospace">Consolas</option></select>
+<select id="img" title="Images"><option value="keep">Images: keep links</option><option value="embed">Images: embed (base64)</option><option value="remove">Images: remove</option></select>
+<button id="tbl">Table</button><button id="cbtn">Code block</button>
+<label class="file">Open .docx / .html<input id="f" type="file" accept=".docx,.html,.htm"></label>
+<button class="p" id="cpmd">Copy Markdown</button><button id="dl">Download .md</button>
+<button id="tg">Show Markdown</button><button id="clr">Clear</button>
+</div>
+<div class="wrap" id="wrap">
+<div><div id="ed" contenteditable="true" spellcheck="true" data-ph="Start typing or paste formatted text, tables and images here. Select text to see formatting tools."></div></div>
+<div id="mdp"><h2>Markdown
+<select id="hd"><option value="atx"># Headings</option><option value="setext">Underlined</option></select>
+<select id="bl"><option value="-">Bullet -</option><option value="*">Bullet *</option><option value="+">Bullet +</option></select></h2>
+<textarea id="out" spellcheck="false" readonly></textarea><div class="st" id="st"></div></div>
+</div>
+</main>
+
+<div class="bub" id="bub"><div class="row" id="row">
+<button data-c="h1" title="Heading 1"><b>H1</b></button><button data-c="h2" title="Heading 2"><b>H2</b></button><button data-c="h3" title="Heading 3"><b>H3</b></button><button data-c="p" title="Normal text">¶</button>
+<span class="sep"></span>
+<button data-c="b" title="Bold"><b>B</b></button><button data-c="i" title="Italic"><i>I</i></button><button data-c="u" title="Underline"><u>U</u></button><button data-c="s" title="Strikethrough"><s>S</s></button><button data-c="hl" title="Highlight"><span style="background:#fff3a3;padding:0 3px">A</span></button>
+<span class="sep"></span>
+<button data-c="ul" title="Bullet list">• List</button><button data-c="ol" title="Numbered list">1. List</button><button data-c="q" title="Quote">❝</button>
+<span class="sep"></span>
+<button data-c="link" title="Link">Link</button><button data-c="code" title="Inline code">&lt;/&gt;</button><button data-c="cb" title="Code block">{ }</button><button data-c="clr" title="Clear formatting">✕ fmt</button>
+</div>
+<div class="lk" id="lk"><input id="url" placeholder="https://example.com"><button id="ok">Apply</button><button id="no">Cancel</button></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/turndown@7.1.2/dist/turndown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/turndown-plugin-gfm@1.0.2/dist/turndown-plugin-gfm.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const ed=$('ed'),out=$('out'),st=$('st'),bub=$('bub');
+const td=new TurndownService({headingStyle:'atx',bulletListMarker:'-',codeBlockStyle:'fenced',emDelimiter:'*'});
+td.use(turndownPluginGfm.gfm);
+const BOLD=/font-weight:\s*(700|800|900|bold)/,ITAL=/font-style:\s*italic/;
+td.addRule('styledSpan',{filter:n=>n.nodeName==='SPAN'&&(BOLD.test(n.getAttribute('style')||'')||ITAL.test(n.getAttribute('style')||'')),
+  replacement:(c,n)=>{const s=n.getAttribute('style');if(!c.trim())return c;let o=c.trim();
+  if(ITAL.test(s))o='*'+o+'*';if(BOLD.test(s))o='**'+o+'**';return ' '+o+' ';}});
+td.addRule('htmlInline',{filter:['u','mark'],replacement:(c,n)=>{const t=n.nodeName.toLowerCase();return '<'+t+'>'+c+'</'+t+'>'}});
+const unwrap=el=>el.replaceWith(...el.childNodes);
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function clean(doc){
+  doc.querySelectorAll('.copybtn,meta,style,script').forEach(e=>e.remove());
+  doc.querySelectorAll('.cb,b[id^="docs-internal-guid"]').forEach(unwrap);
+  doc.querySelectorAll('table').forEach(t=>{
+    t.querySelectorAll('td,th').forEach(c=>{c.querySelectorAll('p,div').forEach(p=>{p.after(' ');unwrap(p)});
+      c.innerHTML=c.innerHTML.replace(/\|/g,'&#124;').replace(/\s+/g,' ').trim()});
+    if(!t.querySelector('th')){const r=t.querySelector('tr');
+      if(r)r.querySelectorAll('td').forEach(c=>{const h=doc.createElement('th');h.innerHTML=c.innerHTML;c.replaceWith(h)})}});
+  doc.querySelectorAll('li > p').forEach(unwrap);
+}
+const toData=async s=>{const b=await (await fetch(s)).blob();return new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)})};
+let tick=0;
+async function run(){
+  const my=++tick;td.options.headingStyle=$('hd').value;td.options.bulletListMarker=$('bl').value;
+  const doc=new DOMParser().parseFromString(ed.innerHTML,'text/html');clean(doc);
+  const mode=$('img').value;
+  for(const im of [...doc.querySelectorAll('img')]){const s=im.getAttribute('src')||'';
+    if(mode==='remove'){im.remove();continue}
+    if(mode==='embed'&&/^https?:/.test(s)){try{im.setAttribute('src',await toData(s))}catch(e){}}}
+  if(my!==tick)return;
+  const md=td.turndown(doc.body).replace(/\u200b/g,'').replace(/\n{3,}/g,'\n\n');
+  out.value=md;st.textContent=md?(md.match(/\S+/g)||[]).length+' words, '+md.length+' characters':'';
+}
+let t;const later=()=>{clearTimeout(t);t=setTimeout(run,150)};
+ed.addEventListener('input',later);
+['img','hd','bl'].forEach(i=>$(i).addEventListener('change',run));
+$('font').onchange=e=>ed.style.fontFamily=e.target.value;
+
+async function copyText(s){try{await navigator.clipboard.writeText(s)}catch(e){const a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}}
+// code blocks with copy buttons
+function mkCopy(){const b=document.createElement('button');b.className='copybtn';b.contentEditable='false';b.textContent='Copy';return b}
+function decorate(){ed.querySelectorAll('pre').forEach(p=>{if(p.parentElement.classList.contains('cb'))return;
+  if(!p.querySelector('code')){const c=document.createElement('code');c.append(...p.childNodes);p.append(c)}
+  const w=document.createElement('div');w.className='cb';p.replaceWith(w);w.append(mkCopy(),p)})}
+ed.addEventListener('click',e=>{if(e.target.classList.contains('copybtn')){const b=e.target;
+  copyText(b.parentElement.querySelector('pre').textContent);b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1200)}});
+function codeBlock(){const s=getSelection(),txt=s.rangeCount?s.toString():'';
+  ed.focus();document.execCommand('insertHTML',false,'<div class="cb nw"><button class="copybtn" contenteditable="false">Copy</button><pre><code>'+(esc(txt)||'\u200b')+'</code></pre></div><p><br></p>');
+  const n=ed.querySelector('.cb.nw');if(n){n.classList.remove('nw');const r=document.createRange();r.selectNodeContents(n.querySelector('code'));r.collapse(false);s.removeAllRanges();s.addRange(r)}}
+
+// formatting commands
+const ex=(c,v)=>document.execCommand(c,false,v);
+const fb=tag=>ex('formatBlock',(document.queryCommandValue('formatBlock')||'').toLowerCase()===tag?'<p>':'<'+tag+'>');
+function tog(tag){const s=getSelection();if(!s.rangeCount)return;
+  const hit=(s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement).closest(tag);
+  if(hit&&ed.contains(hit)){unwrap(hit);return}
+  const d=document.createElement('div');d.appendChild(s.getRangeAt(0).cloneContents());ex('insertHTML','<'+tag+'>'+d.innerHTML+'</'+tag+'>')}
+let saved=null,linking=false;
+const cmds={h1:()=>fb('h1'),h2:()=>fb('h2'),h3:()=>fb('h3'),p:()=>ex('formatBlock','<p>'),b:()=>ex('bold'),i:()=>ex('italic'),u:()=>ex('underline'),s:()=>ex('strikeThrough'),
+  hl:()=>tog('mark'),ul:()=>ex('insertUnorderedList'),ol:()=>ex('insertOrderedList'),q:()=>fb('blockquote'),code:()=>tog('code'),cb:codeBlock,clr:()=>ex('removeFormat'),
+  link:()=>{const s=getSelection();saved=s.getRangeAt(0).cloneRange();linking=true;$('row').style.display='none';$('lk').style.display='flex';
+    const a=(s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement).closest('a');$('url').value=a?a.getAttribute('href'):'';setTimeout(()=>$('url').focus(),0)}};
+bub.addEventListener('mousedown',e=>{if(e.target.tagName!=='INPUT')e.preventDefault()});
+$('row').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;cmds[b.dataset.c]();if(b.dataset.c!=='link'){ed.focus();later();place()}});
+function endLink(){linking=false;$('lk').style.display='none';$('row').style.display='flex'}
+$('ok').onclick=()=>{let u=$('url').value.trim();const s=getSelection();ed.focus();s.removeAllRanges();s.addRange(saved);
+  if(!u)ex('unlink');else{if(!/^[a-z][a-z0-9+.-]*:/i.test(u))u='https://'+u;ex('createLink',u)}endLink();later();place()};
+$('no').onclick=()=>{endLink();ed.focus()};
+$('url').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('ok').click()}if(e.key==='Escape')$('no').click()});
+function place(){
+  const s=getSelection();
+  if(linking)return;
+  if(!s.rangeCount||s.isCollapsed||!ed.contains(s.anchorNode)||!ed.contains(s.focusNode)){bub.style.display='none';return}
+  const r=s.getRangeAt(0).getBoundingClientRect();if(!r.width&&!r.height){bub.style.display='none';return}
+  bub.style.display='block';const w=bub.offsetWidth,h=bub.offsetHeight;
+  let top=r.top-h-8;if(top<8)top=r.bottom+8;
+  bub.style.top=top+'px';bub.style.left=Math.max(8,Math.min(innerWidth-w-8,r.left+r.width/2-w/2))+'px';
+}
+document.addEventListener('selectionchange',place);addEventListener('scroll',place,true);addEventListener('resize',place);
+// Tab indents nested lists
+ed.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const s=getSelection();
+  if(s.anchorNode&&(s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement).closest('li')){e.preventDefault();ex(e.shiftKey?'outdent':'indent');later()}});
+// paste: images from clipboard, then decorate code blocks
+ed.addEventListener('paste',e=>{const cd=e.clipboardData;if(!cd)return;
+  const files=[...cd.files].filter(f=>f.type.startsWith('image/'));
+  if(files.length&&!cd.getData('text/html')){e.preventDefault();
+    files.forEach(f=>{const fr=new FileReader();fr.onload=()=>{ex('insertHTML','<img src="'+fr.result+'" alt="image">');later()};fr.readAsDataURL(f)})}
+  else setTimeout(()=>{decorate();run()},60)});
+$('f').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
+  try{if(/\.docx$/i.test(f.name))ed.innerHTML=(await mammoth.convertToHtml({arrayBuffer:await f.arrayBuffer()})).value;else ed.innerHTML=await f.text();
+    decorate();run()}catch(err){st.textContent='Could not read that file.'}e.target.value=''});
+$('tbl').onclick=()=>{ed.focus();const r='<tr>'+'<td><br></td>'.repeat(3)+'</tr>';ex('insertHTML','<table><thead><tr>'+'<th>Header</th>'.repeat(3)+'</tr></thead><tbody>'+r+r+'</tbody></table><p><br></p>');later()};
+$('cbtn').onclick=()=>{codeBlock();later()};
+$('tg').onclick=()=>{const w=$('wrap').classList.toggle('show');$('tg').textContent=w?'Hide Markdown':'Show Markdown'};
+$('cpmd').onclick=async()=>{await run();await copyText(out.value);$('cpmd').textContent='Copied';setTimeout(()=>$('cpmd').textContent='Copy Markdown',1200)};
+$('dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out.value],{type:'text/markdown'}));a.download='converted.md';a.click()};
+$('clr').onclick=()=>{ed.innerHTML='';out.value='';st.textContent=''};
+</script>
+</body>
+</html>
