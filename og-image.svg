@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Rich Text to Markdown Editor</title>
+  <desc id="desc">A browser-based tool that converts rich text into Markdown and exports to PDF, Word, HTML, and plain text.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef2ff"/>
+      <stop offset="100%" stop-color="#f8fafc"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="165" cy="185" r="120" fill="#dbeafe" opacity="0.7"/>
+  <circle cx="1030" cy="510" r="150" fill="#e9d5ff" opacity="0.7"/>
+  <rect x="180" y="120" width="840" height="390" rx="26" fill="#ffffff" stroke="#e5e7eb" stroke-width="2"/>
+  <rect x="230" y="170" width="260" height="22" rx="11" fill="#e2e8f0"/>
+  <rect x="230" y="214" width="210" height="18" rx="9" fill="#e2e8f0"/>
+  <rect x="230" y="252" width="300" height="18" rx="9" fill="#e2e8f0"/>
+  <rect x="230" y="300" width="280" height="150" rx="18" fill="#f8fafc" stroke="#e2e8f0"/>
+  <rect x="560" y="170" width="300" height="32" rx="16" fill="url(#accent)"/>
+  <rect x="560" y="224" width="220" height="18" rx="9" fill="#c7d2fe"/>
+  <rect x="560" y="260" width="250" height="18" rx="9" fill="#dbeafe"/>
+  <rect x="560" y="296" width="190" height="18" rx="9" fill="#e2e8f0"/>
+  <g transform="translate(872 185)">
+    <rect width="116" height="116" rx="20" fill="#eef2ff"/>
+    <path d="M34 76h48M34 53h48M34 30h28" stroke="#4f46e5" stroke-width="8" stroke-linecap="round"/>
+    <path d="M83 42l16 15-16 15" fill="none" stroke="#4f46e5" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="180" y="560" font-family="Segoe UI, Arial, sans-serif" font-size="58" font-weight="700" fill="#111827">Rich Text to Markdown</text>
+  <text x="180" y="595" font-family="Segoe UI, Arial, sans-serif" font-size="24" fill="#475569">Convert documents to Markdown, PDF, Word, HTML, and plain text.</text>
+</svg>
